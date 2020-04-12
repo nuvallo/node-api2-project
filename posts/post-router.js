@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
       .json(posts)
       .catch((error) => {
         console.log(error);
-        res.status(500).json({ message: "Error retrieving the posts" });
+        res.status(500).json({ errorMessage: "Error retrieving the posts" });
       });
   });
 });
@@ -26,12 +26,12 @@ router.get("/:id", (req, res) => {
         res.status(200).json(post);
       } else {
         // this isn't displaying (come back and debug)
-        res.status(404).json({ message: "Post not found" });
+        res.status(404).json({ errorMessage: "Post not found" });
       }
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).json({ message: "Error retrieving the posts" });
+      res.status(500).json({ errorMessage: "Error retrieving the posts" });
     });
 });
 
@@ -42,7 +42,7 @@ router.post("/", (req, res) => {
 
   if (!title || !contents) {
     return res.status(400).json({
-      mesage: "Post needs a title or content",
+      errorMessage: "Post needs a title or content",
     });
   } else {
     posts
@@ -52,7 +52,7 @@ router.post("/", (req, res) => {
       })
       .catch((error) => {
         console.log(error);
-        res.status(500).json({ message: "Error adding post" });
+        res.status(500).json({ errorMessage: "Error adding post" });
       });
   }
 });
@@ -64,7 +64,7 @@ router.put("/:id", (req, res) => {
 
   if (!title || !contents) {
     return res.status(400).json({
-      mesage: "Post needs a title or content",
+      errorMessage: "Post needs a title or content",
     });
   } else {
     posts
@@ -74,7 +74,7 @@ router.put("/:id", (req, res) => {
       })
       .catch((error) => {
         console.log(error);
-        res.status(500).json({ message: "Error updating post" });
+        res.status(500).json({ errorMessage: "Error updating post" });
       });
   }
 });
@@ -88,7 +88,7 @@ router.delete("/:id", (req, res) => {
       })
       .catch((error) => {
         console.log(error);
-        res.status(500).json({ message: "Error removing post" });
+        res.status(500).json({ errorMessage: "Error removing post" });
       });
   } else {
   }
@@ -105,16 +105,16 @@ router.get("/:id/comments", (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).json({ message: "Error retrieving comments" });
+      res.status(500).json({ errorMessage: "Error retrieving comments" });
     });
 });
 
 // Gets a comment
 router.get("/:id/comments/:commentId", (req, res) => {
   if (!req.params.id) {
-    res.status(404).json({ message: "Post doesn't exists" });
+    res.status(404).json({ errorMessage: "Post doesn't exists" });
   } else if (!req.params.commentId) {
-    res.status(404).json({ message: "Comment doesn't exists" });
+    res.status(404).json({ errorMessage: "Comment doesn't exists" });
   } else {
     posts
       .findCommentById(req.params.commentId)
@@ -123,7 +123,36 @@ router.get("/:id/comments/:commentId", (req, res) => {
       })
       .catch((error) => {
         console.log(error);
-        res.status(500).json({ message: "Error retrieving comment" });
+        res.status(500).json({ errorMessage: "Error retrieving comment" });
+      });
+  }
+});
+
+// Post a comment
+router.post("/:id/comments", (req, res) => {
+  const { text } = req.body;
+  const { id } = req.params;
+  const commentInfo = { ...req.body, post_id: id };
+
+  if (!id) {
+    res
+      .status(404)
+      .json({ message: "The post with the specified ID does not exist." });
+  } else if (!text) {
+    res
+      .status(400)
+      .json({ errorMessage: "Please provide text for the comment." });
+  } else {
+    posts
+      .insertComment(commentInfo)
+      .then((comment) => {
+        res.status(201).json(comment);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json({
+          error: "Error adding comment to post",
+        });
       });
   }
 });
