@@ -94,4 +94,38 @@ router.delete("/:id", (req, res) => {
   }
 });
 
+// Requests to /api/posts/:id/comments
+
+// Gets all comments
+router.get("/:id/comments", (req, res) => {
+  posts
+    .findPostComments(req.params.id)
+    .then((comments) => {
+      res.status(201).json(comments);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ message: "Error retrieving comments" });
+    });
+});
+
+// Gets a comment
+router.get("/:id/comments/:commentId", (req, res) => {
+  if (!req.params.id) {
+    res.status(404).json({ message: "Post doesn't exists" });
+  } else if (!req.params.commentId) {
+    res.status(404).json({ message: "Comment doesn't exists" });
+  } else {
+    posts
+      .findCommentById(req.params.commentId)
+      .then((comment) => {
+        res.status(201).json(comment);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json({ message: "Error retrieving comment" });
+      });
+  }
+});
+
 module.exports = router;
