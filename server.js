@@ -6,7 +6,7 @@ server.use(express.json());
 server.use("/api/posts", postsRouter);
 
 server.get("/", (req, res) => {
-  res.send(`<h2>It's working</h2>`);
+  res.send(`<h2>Welcome to API</h2>`);
 });
 
 const localHost = "21.0.0.1";
