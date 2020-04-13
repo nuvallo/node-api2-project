@@ -17,16 +17,15 @@ router.get("/", (req, res) => {
   });
 });
 
-// Get post
 router.get("/:id", (req, res) => {
+  const { id } = req.params;
   posts
-    .findById(req.params.id)
+    .findById(id)
     .then((post) => {
-      if (post) {
-        res.status(200).json(post);
-      } else {
-        // this isn't displaying (come back and debug)
+      if (!post) {
         res.status(404).json({ errorMessage: "Post not found" });
+      } else {
+        res.status(200).json(post);
       }
     })
     .catch((error) => {
@@ -37,8 +36,7 @@ router.get("/:id", (req, res) => {
 
 // Adding a new post
 router.post("/", (req, res) => {
-  const title = req.body.title;
-  const contents = req.body.contents;
+  const { title, contents } = req.body;
 
   if (!title || !contents) {
     return res.status(400).json({
@@ -59,6 +57,7 @@ router.post("/", (req, res) => {
 
 // Updating Post
 router.put("/:id", (req, res) => {
+  const { id } = req.params;
   const title = req.body.title;
   const contents = req.body.contents;
 
@@ -68,7 +67,7 @@ router.put("/:id", (req, res) => {
     });
   } else {
     posts
-      .update(req.params.id, req.body)
+      .update(id, req.body)
       .then((post) => {
         res.status(201).json(post);
       })
@@ -80,11 +79,12 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  if (req.params.id) {
+  const { id } = req.params;
+  if (id) {
     posts
-      .remove(req.params.id)
+      .remove(id)
       .then(() => {
-        res.status(201).json({ message: "Post deleted" });
+        res.status(201).json({ message: `post was removed` });
       })
       .catch((error) => {
         console.log(error);
@@ -98,8 +98,9 @@ router.delete("/:id", (req, res) => {
 
 // Gets all comments
 router.get("/:id/comments", (req, res) => {
+  const { id } = req.params;
   posts
-    .findPostComments(req.params.id)
+    .findPostComments(id)
     .then((comments) => {
       res.status(201).json(comments);
     })
