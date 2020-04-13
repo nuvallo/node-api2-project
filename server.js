@@ -5,7 +5,7 @@ const server = express();
 
 server.use(express.json());
 server.use(cors());
-server.use("/api/posts", postsRouter);
+server.use("/api/posts/", postsRouter);
 
 server.get("/", (req, res) => {
   res.json({ msg: "welcome to my server" });

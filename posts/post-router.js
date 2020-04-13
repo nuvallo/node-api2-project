@@ -30,7 +30,7 @@ router.get("/:id", (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).json({ errorMessage: "Error retrieving the posts" });
+      res.status(500).json({ errorMessage: "Error retrieving the post" });
     });
 });
 
