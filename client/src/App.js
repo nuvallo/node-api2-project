@@ -10,8 +10,6 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
 
-  const id = null;
-
   useEffect(() => {
     axios
       .get("http://localhost:4000/api/posts")
@@ -22,22 +20,25 @@ function App() {
       .catch((error) => {
         console.log("Error:", error);
       });
-
-    axios
-      .get(`http://localhost:4000/api/posts/${id}/comments`)
-      .then((res) => {
-        console.log("Comments:", res.data);
-        setComments(res.data);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
   }, []);
+
+  const deletePost = (id) => {
+    axios
+      .delete(`http://localhost:4000/api/posts/${id}`)
+      .then(window.location.reload())
+      .catch((err) => console.log("Did not delete post: ", err));
+  };
+
+  const id = null;
 
   return (
     <div className="App">
       <Route path="/" component={Navigation} />
-      <Route exact path="/" render={() => <Home posts={posts} />} />
+      <Route
+        exact
+        path="/"
+        render={() => <Home posts={posts} deletePost={deletePost} />}
+      />
       <Route path="/about" component={About} />
     </div>
   );

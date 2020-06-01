@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import axios from "axios";
 import {
   Card,
   CardText,
@@ -8,7 +9,11 @@ import {
   Button,
 } from "reactstrap";
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, deletePost }) => {
+  const deletePostCard = (event) => {
+    event.preventDefault();
+    deletePost(post.id);
+  };
   return (
     <Fragment>
       <Card className="post-card">
@@ -24,7 +29,7 @@ const PostCard = ({ post }) => {
             {post.created_at}
           </CardSubtitle>
           <Button>Edit</Button>
-          <Button>Delete</Button>
+          <Button onClick={deletePostCard}>Delete</Button>
         </CardBody>
       </Card>
     </Fragment>

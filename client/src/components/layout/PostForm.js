@@ -1,7 +1,7 @@
 import React from "react";
 
-const UpdateForm = () => {
+const PostForm = () => {
   return <div></div>;
 };
 
-export default UpdateForm;
+export default PostForm;
