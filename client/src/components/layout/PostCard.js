@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import axios from "axios";
+
 import {
   Card,
   CardText,
@@ -23,7 +23,10 @@ const PostCard = ({ post, deletePost }) => {
             {post.title}
           </CardTitle>
 
-          <CardText>{post.contents}</CardText>
+          <CardText>
+            <strong>Content: </strong>
+            {post.contents}
+          </CardText>
           <CardSubtitle>
             <strong>Date posted: </strong>
             {post.created_at}

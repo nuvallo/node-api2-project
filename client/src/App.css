@@ -31,3 +31,10 @@
 .post-card Button {
   margin: 10% 0 0 1%;
 }
+
+.post-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

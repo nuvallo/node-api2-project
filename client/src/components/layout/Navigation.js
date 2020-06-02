@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { Link } from "react-browser-router";
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
 
 const Navigation = () => {
@@ -10,18 +9,10 @@ const Navigation = () => {
 
         <Nav className="mr-auto" navbar>
           <NavItem>
-            <NavLink>
-              <Link className="nav-link" to="/">
-                Home
-              </Link>
-            </NavLink>
+            <NavLink href="/">Home</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink>
-              <Link className="nav-link" to="/about">
-                About
-              </Link>
-            </NavLink>
+            <NavLink href="/about">About</NavLink>
           </NavItem>
         </Nav>
       </Navbar>

@@ -5,10 +5,10 @@ import Navigation from "./components/layout/Navigation";
 import Home from "./components/pages/Home";
 import About from "./components/pages/About";
 import "./App.css";
+import PostForm from "./components/layout/PostForm";
 
 function App() {
   const [posts, setPosts] = useState([]);
-  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     axios
@@ -23,13 +23,24 @@ function App() {
   }, []);
 
   const deletePost = (id) => {
-    axios
-      .delete(`http://localhost:4000/api/posts/${id}`)
-      .then(window.location.reload())
-      .catch((err) => console.log("Did not delete post: ", err));
+    try {
+      axios
+        .delete(`http://localhost:4000/api/posts/${id}`)
+        .then(window.location.reload());
+    } catch (error) {
+      console.log("Could not delete post: ", error);
+    }
   };
 
-  const id = null;
+  const newPost = (data) => {
+    try {
+      axios.post("http://localhost:4000/api/posts/", data).then(() => {
+        window.location.reload();
+      });
+    } catch (error) {
+      console.log("Could not add post: ", error);
+    }
+  };
 
   return (
     <div className="App">
@@ -40,6 +51,7 @@ function App() {
         render={() => <Home posts={posts} deletePost={deletePost} />}
       />
       <Route path="/about" component={About} />
+      <Route path="/newPost" render={() => <PostForm newPost={newPost} />} />
     </div>
   );
 }
