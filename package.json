@@ -5,18 +5,15 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "server": "nodemon index.js"
+    "server": "nodemon index.js",
+    "nodemon start": "nodemon index.js"
   },
   "dependencies": {
-    "axios": "^0.19.2",
     "client": "0.0.1",
     "cors": "^2.8.5",
-    "create-react-app": "^3.4.1",
     "express": "^4.17.1",
     "knex": "^0.20.11",
-    "react-browser-router": "^2.1.2",
-    "sqlite3": "^4.1.1",
-    "styled-components": "^5.1.0"
+    "sqlite3": "^4.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

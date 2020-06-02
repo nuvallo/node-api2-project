@@ -5,98 +5,79 @@ const router = express.Router();
 // Request to /api/posts
 
 // Get all posts
-router.get("/", (req, res) => {
-  posts.find().then((posts) => {
-    res
-      .status(200)
-      .json(posts)
-      .catch((error) => {
-        console.log(error);
-        res.status(500).json({ errorMessage: "Error retrieving the posts" });
-      });
-  });
+router.get("/", async (req, res) => {
+  try {
+    res.status(200).json(await posts.find());
+  } catch (error) {
+    res.status(500).json({ errorMessage: "Error retrieving the posts" });
+    console.log("GET posts error: ", error);
+  }
 });
 
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-  posts
-    .findById(id)
-    .then((post) => {
-      if (!post) {
-        res.status(404).json({ errorMessage: "Post not found" });
-      } else {
-        res.status(200).json(post);
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({ errorMessage: "Error retrieving the post" });
-    });
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await posts.findById(id);
+    if (!post) {
+      res.status(404).json({ errorMessage: "Post was not found" });
+    } else {
+      res.status(200).json(post);
+    }
+  } catch (error) {
+    console.log("GET post by ID was not found: ", error);
+    res.status(500).json({ errorMessage: "Error retrieving the post" });
+  }
 });
 
 // Adding a new post
-router.post("/", (req, res) => {
-  const { title, contents } = req.body;
-
-  if (!title || !contents) {
-    return res.status(400).json({
-      errorMessage: "Post needs a title or content",
-    });
-  } else {
-    posts
-      .insert(req.body)
-      .then((post) => {
-        res.status(201).json(post);
-      })
-      .catch((error) => {
-        console.log(error);
-        res.status(500).json({ errorMessage: "Error adding post" });
-      });
+router.post("/", async (req, res) => {
+  try {
+    const { title, contents } = req.body;
+    if (!title || !contents) {
+      return res
+        .status(400)
+        .json({ errorMessage: "Post needs a title or content" });
+    } else {
+      res.status(200).json(await posts.insert(req.body));
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errorMessage: "Error adding post" });
   }
 });
 
-// Updating Post
-router.put("/:id", (req, res) => {
-  const { id } = req.params;
-  const title = req.body.title;
-  const contents = req.body.contents;
-
-  if (!title || !contents) {
-    return res.status(400).json({
-      errorMessage: "Post needs a title or content",
-    });
-  } else {
-    posts
-      .update(id, req.body)
-      .then((post) => {
-        res.status(201).json(post);
-      })
-      .catch((error) => {
-        console.log(error);
-        res.status(500).json({ errorMessage: "Error updating post" });
-      });
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, contents } = req.body;
+    if (!title || !contents) {
+      res.status(404).json({ errorMessage: "Post requires title and content" });
+    } else {
+      const newPost = await posts.update(id, req.body);
+      res.status(200).json(newPost);
+    }
+  } catch (error) {
+    console.log("PUT error ", error);
+    res.status(400).json({ errorMessage: "Error editing this post" });
   }
 });
 
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-  if (id) {
-    posts
-      .remove(id)
-      .then(() => {
-        res.status(201).json({ message: `post was removed` });
-      })
-      .catch((error) => {
-        console.log(error);
-        res.status(500).json({ errorMessage: "Error removing post" });
-      });
-  } else {
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (id) {
+      res.status(200).json(await posts.remove(id));
+    } else {
+      res.status(404).json({ errorMessage: "Could not delete post" });
+    }
+  } catch (error) {
+    console.log("DELETE post error: ", error);
+    res.status(500).json({ errorMessage: "Error removing post" });
   }
 });
 
 // Requests to /api/posts/:id/comments
 
-// Gets all comments
 router.get("/:id/comments", (req, res) => {
   const { id } = req.params;
   posts
@@ -110,7 +91,6 @@ router.get("/:id/comments", (req, res) => {
     });
 });
 
-// Gets a comment
 router.get("/:id/comments/:commentId", (req, res) => {
   if (!req.params.id) {
     res.status(404).json({ errorMessage: "Post doesn't exists" });
@@ -129,7 +109,6 @@ router.get("/:id/comments/:commentId", (req, res) => {
   }
 });
 
-// Post a comment
 router.post("/:id/comments", (req, res) => {
   const { text } = req.body;
   const { id } = req.params;
